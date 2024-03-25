@@ -15,6 +15,11 @@ taskipy = "^1.12.2"
 isort = "^5.13.2"
 black = "^24.3.0"
 pytest = "^8.1.1"
+pandera = {extras = ["io"], version = "^0.18.3"}
+sqlalchemy = "^2.0.29"
+schema = "^0.7.5"
+python-dotenv = "^1.0.1"
+psycopg2 = "^2.9.9"
 
 
 [build-system]
