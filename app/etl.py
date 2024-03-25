@@ -8,7 +8,7 @@ import schema
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
-from schema import ProdutoSchema
+from .schema import ProdutoSchema, ProdutoSchemaKPI
 
 # from schema import ProdutoSchema, ProductSchemaKPI
 
@@ -41,11 +41,35 @@ def extrair_do_sql(query: str) -> pd.DataFrame:
 
     return df_crm
 
+@pa.check_input(ProdutoSchema)
+@pa.check_output(ProdutoSchemaKPI)
+def transformar(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Transforma os dados do DataFrame aplicando cálculos e normalizações.
+
+    Args:
+        df: DataFrame do Pandas contendo os dados originais.
+
+    Returns:
+        DataFrame do Pandas após a aplicação das transformações.
+    """
+    # Calcular valor_total_estoque
+    df['valor_total_estoque'] = df['quantidade'] * df['preco']
+    
+    # Normalizar categoria para maiúsculas
+    df['categoria_normalizada'] = df['categoria'].str.lower()
+    
+    # Determinar disponibilidade (True se quantidade > 0)
+    df['disponibilidade'] = df['quantidade'] > 0
+    
+    return df
+
+
 
 if __name__ == "__main__":
     query = "SELECT * FROM produtos_bronze LIMIT 10"
     df_crm = extrair_do_sql(query=query)
-    
+
       # schema_crm = pa.infer_schema(df_crm)
 
     # with open("schema_crm.py", "w", encoding='utf-8') as arquivo:
